@@ -235,6 +235,29 @@ describe('spawnWorkerForTask – prompt mode (Gemini & Codex)', () => {
 
     rmSync(cwd, { recursive: true, force: true });
   });
+
+  it('returns empty and skips spawn when task is already in_progress (claim already taken)', async () => {
+    const taskPath = join(cwd, '.omc/state/team/test-team/tasks/1.json');
+    writeFileSync(taskPath, JSON.stringify({
+      id: '1',
+      subject: 'Test task',
+      description: 'Do something',
+      status: 'in_progress',
+      owner: 'worker-2',
+    }), 'utf-8');
+
+    const runtime = makeRuntime(cwd, 'codex');
+    const paneId = await spawnWorkerForTask(runtime, 'worker-1', 0);
+
+    expect(paneId).toBe('');
+    expect(tmuxCalls.args.some(args => args[0] === 'split-window')).toBe(false);
+    expect(tmuxCalls.args.some(args => args[0] === 'send-keys')).toBe(false);
+    expect(runtime.activeWorkers.size).toBe(0);
+
+    const task = JSON.parse(readFileSync(taskPath, 'utf-8')) as { status: string; owner: string | null };
+    expect(task.status).toBe('in_progress');
+    expect(task.owner).toBe('worker-2');
+  });
 });
 
 describe('spawnWorkerForTask – model passthrough from environment variables', () => {
