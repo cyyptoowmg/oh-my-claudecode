@@ -264,3 +264,53 @@ export async function notify(
     return null;
   }
 }
+
+// ============================================================================
+// CUSTOM INTEGRATION EXPORTS (Added for Notification Refactor)
+// ============================================================================
+
+export type {
+  CustomIntegration,
+  CustomIntegrationType,
+  WebhookIntegrationConfig,
+  CliIntegrationConfig,
+  CustomIntegrationsConfig,
+  ExtendedNotificationConfig,
+} from "./types.js";
+
+export {
+  sendCustomWebhook,
+  sendCustomCli,
+  dispatchCustomIntegrations,
+} from "./dispatcher.js";
+
+export {
+  getCustomIntegrationsConfig,
+  getCustomIntegrationsForEvent,
+  hasCustomIntegrationsEnabled,
+  detectLegacyOpenClawConfig,
+  migrateLegacyOpenClawConfig,
+} from "./config.js";
+
+export {
+  CUSTOM_INTEGRATION_PRESETS,
+  getPresetList,
+  getPreset,
+  isValidPreset,
+  type PresetConfig,
+  type PresetName,
+} from "./presets.js";
+
+export {
+  TEMPLATE_VARIABLES,
+  getVariablesForEvent,
+  getVariableDocumentation,
+  type TemplateVariableName,
+} from "./template-variables.js";
+
+export {
+  validateCustomIntegration,
+  checkDuplicateIds,
+  sanitizeArgument,
+  type ValidationResult,
+} from "./validation.js";
